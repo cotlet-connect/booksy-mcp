@@ -105,6 +105,7 @@ Yes. Cotlet.dev is a hosted MCP server that works in your Booksy account for you
 
 - [Booksy on Cotlet.dev](https://cotlet.dev/integrations/booksy-api-mcp-server?utm_source=github&utm_medium=readme&utm_campaign=booksy&utm_content=find)
 - [PyPI package booksy-mcp](https://pypi.org/project/booksy-mcp/)
+- [Odel](https://odel.app/modules/cotlet/booksy)
 - [Step-by-step guide (PDF) on Internet Archive](https://archive.org/details/cotlet-connect-booksy-to-ai-agents-guide)
 
 ## Also works with
