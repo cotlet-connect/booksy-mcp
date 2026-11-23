@@ -1,32 +1,68 @@
-# How to connect Booksy to Claude Code, ChatGPT and any AI agent
+# Booksy API integration and MCP server: connect Booksy to ChatGPT, Claude and any AI agent
 
-**Yes, Claude, ChatGPT and other AI agents can work in your Booksy account.** Booksy's official ChatGPT app helps clients find professionals and see live open slots, with the final booking confirmed on Booksy. Cotlet.dev connects your own signed-in Booksy business account to any AI agent, so you can ask in plain words and the AI books, reschedules and follows up with clients for you.
+Booksy API integration and MCP server, unofficial, by Cotlet. Your AI works in your own signed-in Booksy account: the calendar, clients, appointments, no-show fees and deposits, Boost, reviews and reports, on the same screens your login opens. No developer and no Booksy API key needed. Cotlet is independent and is not affiliated with Booksy.
 
-## What you can ask
+**Does Booksy have an API or an MCP server?** Booksy's API is for partners only, with partner-issued keys (checked 23 Nov 2026); a business owner gets no API key. Booksy has no Zapier or Make app. Its ChatGPT app, launched in the US on 23 Oct 2026, is for clients who book, not for the business, and its AI Receptionist answers the phone in early access. Booksy's help center says a copy of your client list comes by emailing support.
 
-> Book Maria Lopez for a skin fade with Tony on Thursday at 4 pm.
+## What barbers, salon owners and beauty pros ask their AI to do in Booksy
 
-> What does Saturday look like per staff member? List open slots longer than 30 minutes.
+| Job | Ask your AI | Make it repeat |
+|---|---|---|
+| Tomorrow's confirmations | "List tomorrow's appointments with client phone numbers and draft a WhatsApp confirmation for each. Send nothing yet." | Daily |
+| Empty slots tomorrow | "Which slots are empty tomorrow per barber, and which regular clients could take them?" | Daily |
+| Clients who stopped booking | "Find clients who have not rebooked in 6 weeks and draft a message for each." | Weekly |
+| No-shows and deposits | "List this month's no-shows and failed cancellation fees, and the clients I should ask for a deposit." | Monthly |
+| Boost clients to dispute | "List this month's Boost charges and mark the clients who were already mine, so I can claim them back." | Monthly |
+| Review requests | "List today's checked-out clients and draft a Google review request for each." | Daily |
+| Staff commission for payroll | "Download last week's sales per staff member with commission and tips for payroll." | Weekly |
+| Income for your accountant | "Export this month's income, fees and tips to a spreadsheet for my accountant." | Monthly |
+| Bulk price change | "Raise all fade services by $5 and show me the new prices before you save." | When prices change |
+| Appointments in a spreadsheet | "Put each day's appointments in my Google Sheet." | Your own endpoint, called from Google Sheets |
+| Client list out | "Export my full client list with phone numbers and visit history to a spreadsheet." | When you need it, or before you switch |
 
-> Ryan cancelled his Tuesday 11 am. Find clients who often book Tuesday mornings and offer them the slot.
+Your AI asks you before it sends, books or changes anything. Payments stay in your hands: Cotlet refuses payments.
 
-> Which clients haven't booked in 60 days? Make a list with their last service and visit date.
+## Your own Booksy API, built with Cotlet
 
-> Move all of Kevin's Friday appointments to Dana and message the clients.
+Booksy gives business owners no API key: its API is for partners only. With Cotlet you build your own: your AI does the job once in your Cloud Browser, you save it as an endpoint, and you call it from Google Sheets, WhatsApp tools, QuickBooks, Zapier, Make, n8n, your own code.
+
+Examples you can build in a few minutes (none of them exists until you build it):
+
+| Endpoint you build | What it returns or does |
+|---|---|
+| `appointments-for-day` | appointments for a date with client, phone, service and staff |
+| `open-slots` | empty slots per staff member for a date |
+| `lapsed-clients` | clients with no booking for the weeks you name |
+| `no-shows` | no-shows and late cancellations with the fee status |
+| `boost-clients` | Boost-charged clients for a period, with their first visit |
+| `block-time` | blocks a time on a staff member's calendar (writes only after you allow it) |
+
+Call it with your Cotlet API key, JSON in and JSON out:
+
+```bash
+curl -X POST https://cotlet.dev/api/v1/custom/appointments-for-day \
+  -H "Authorization: Bearer $COTLET_API_KEY" -H "Content-Type: application/json" -d '{}'
+```
+
+Limits: one call runs up to 90 seconds, writes wait for your consent, payments are blocked. Start here: https://cotlet.dev/app/custom-api/new?app=booksy
 
 ## Connect in 2 minutes
 
-Get your API key at https://cotlet.dev/app and export it as `COTLET_API_KEY`.
+Sign up at https://cotlet.dev, sign in to Booksy once in your Cloud Browser, then add Cotlet to your AI.
+
+### Claude
+
+Settings → Connectors → Add custom connector, paste `https://cotlet.dev/mcp/v1` and sign in with Cotlet.dev.
+
+### ChatGPT
+
+Open Plugins in ChatGPT, choose Create as a plugin, paste `https://cotlet.dev/mcp/v1` and sign in with Cotlet.dev. No API key needed.
 
 ### Claude Code
 
 ```bash
 claude mcp add --transport http cotlet https://cotlet.dev/mcp/v1 --header "Authorization: Bearer $COTLET_API_KEY"
 ```
-
-### ChatGPT
-
-Settings → Apps → add connector URL `https://cotlet.dev/mcp/v1`, then sign in with Cotlet.dev. No API key needed.
 
 ### Cursor
 
@@ -83,62 +119,42 @@ python3 booksy_agent.py tools     # list Cotlet.dev tools
 python3 booksy_agent.py serve     # start the stdio MCP server (same as no argument)
 ```
 
-## Questions from Booksy users
+## Questions from Booksy pros
+**Does Booksy have an API or a Zapier app?**
 
-**Does Booksy have a public API for developers?**
+Booksy's API is for partners only, and Booksy has no Zapier or Make app (checked 23 Nov 2026). With Cotlet you build your own endpoints in your signed-in Booksy Biz account and call them from Google Sheets, Zapier, Make or n8n.
 
-You don't need one. Cotlet.dev works in your own signed-in Booksy account, so your AI agent can read and change your bookings and client list without any API key from Booksy.
+**Is the Booksy app in ChatGPT for business owners?**
 
-**How do I connect Booksy to ChatGPT?**
+No. Booksy's ChatGPT app is for clients who want to book. Cotlet lets your own ChatGPT or Claude work in your Booksy Biz account for you.
 
-Booksy's own ChatGPT app is for clients finding professionals and open slots. To manage your business account, add Cotlet.dev as an app in ChatGPT (Settings → Apps, connector URL `https://cotlet.dev/mcp/v1`), sign in to Booksy once in your Cotlet.dev Cloud Browser, and ask ChatGPT in plain words. No code and no Booksy API key.
+**Can AI send my Booksy clients a confirmation every morning?**
 
-**Is there a way to use Claude with Booksy?**
+Your AI lists tomorrow's appointments with phone numbers and drafts each confirmation. You send them, or your own endpoint hands them to your WhatsApp tool.
 
-Yes. Booksy has no official connector in Claude's directory, but in Claude Code you can run the one-line `claude mcp add` command above; in the Claude app add `https://cotlet.dev/mcp/v1` as a custom connector. Claude then works in your own Booksy account.
+**Can AI tell me which Booksy Boost clients were really mine?**
 
-**Is there a Booksy MCP server?**
+Yes. It lists the month's Boost charges and marks the clients who visited you before, so you know which charges to dispute.
 
-Yes. Cotlet.dev is a hosted MCP server that works in your Booksy account for you, 24/7, with Claude, ChatGPT, Cursor, Codex, n8n, Make and Zapier.
+**Can AI find Booksy clients who stopped booking?**
+
+Yes. It lists clients with no booking for the weeks you choose and drafts a message for each. Nothing goes out until you say yes.
+
+**How do I export my Booksy client list without emailing support?**
+
+Your AI reads your clients with phone numbers and visit history from the screens your login opens and saves them to a spreadsheet.
 
 ## Find it on
 
-- [Booksy on Cotlet.dev](https://cotlet.dev/integrations/booksy-api-mcp-server?utm_source=github&utm_medium=readme&utm_campaign=booksy&utm_content=find)
+- [Booksy MCP server on Cotlet.dev](https://cotlet.dev/integrations/booksy-api-mcp-server?utm_source=github&utm_medium=readme&utm_campaign=booksy&utm_content=find)
+- [Booksy API with Cotlet](https://cotlet.dev/integrations/api/booksy?utm_source=github&utm_medium=readme&utm_campaign=booksy&utm_content=find)
+- [Does Booksy have an API or MCP server?](https://cotlet.dev/api-mcp-status/booksy?utm_source=github&utm_medium=readme&utm_campaign=booksy&utm_content=find)
 - [PyPI package booksy-mcp](https://pypi.org/project/booksy-mcp/)
-- [Odel](https://odel.app/modules/cotlet/booksy)
-- [mcpbeat](https://mcpbeat.com/mcp-servers/cotlet/booksy/)
-- [Step-by-step guide (PDF) on Internet Archive](https://archive.org/details/cotlet-connect-booksy-to-ai-agents-guide)
 
-## Also works with
+## More barber and beauty apps on Cotlet
 
-- [Mangomint MCP](https://github.com/cotlet-connect/mangomint-mcp)
-- [Wanderlog MCP](https://github.com/cotlet-connect/wanderlog-mcp)
-- [SmugMug MCP](https://github.com/cotlet-connect/smugmug-mcp)
-- [Garmin Connect MCP](https://github.com/cotlet-connect/garmin-mcp)
-- [Housecall Pro MCP](https://github.com/cotlet-connect/housecall-pro-mcp)
-- [Medium MCP](https://github.com/cotlet-connect/medium-mcp)
-- [Crexi MCP](https://github.com/cotlet-connect/crexi-mcp)
-- [DistroKid MCP](https://github.com/cotlet-connect/distrokid-mcp)
-- [LinkedIn MCP](https://github.com/cotlet-connect/linkedin-mcp)
-- [EstimateOne MCP](https://github.com/cotlet-connect/estimateone-mcp)
-- [Google Search Console MCP](https://github.com/cotlet-connect/google-search-console-mcp)
-- [Lichess MCP](https://github.com/cotlet-connect/lichess-mcp)
-- [Strava MCP](https://github.com/cotlet-connect/strava-mcp)
-- [StreamElements MCP](https://github.com/cotlet-connect/streamelements-mcp)
-- [Meetup MCP](https://github.com/cotlet-connect/meetup-mcp)
-- [AccuRanker MCP](https://github.com/cotlet-connect/accuranker-mcp)
-- [GetYourGuide MCP](https://github.com/cotlet-connect/getyourguide-mcp)
-- [Idealista MCP](https://github.com/cotlet-connect/idealista-mcp)
-- [Riverside MCP](https://github.com/cotlet-connect/riverside-mcp)
-- [Udemy MCP](https://github.com/cotlet-connect/udemy-mcp)
-- [Faire MCP](https://github.com/cotlet-connect/faire-mcp)
-- [Buildertrend MCP](https://github.com/cotlet-connect/buildertrend-mcp)
+- [Squire MCP](https://github.com/cotlet-connect/squire-mcp)
+- [GlossGenius MCP](https://github.com/cotlet-connect/glossgenius-mcp)
+- [StyleSeat MCP](https://github.com/cotlet-connect/styleseat-mcp)
 - [Fresha MCP](https://github.com/cotlet-connect/fresha-mcp)
-- [BookingKoala MCP](https://github.com/cotlet-connect/bookingkoala-mcp)
-- [All apps connected through Cotlet.dev](https://github.com/cotlet-connect)
-
----
-
-More: https://cotlet.dev/integrations/booksy-api-mcp-server?utm_source=github&utm_medium=readme&utm_campaign=booksy
-
-Start free: https://cotlet.dev/signup?app=booksy&utm_source=github&utm_medium=readme&utm_campaign=booksy
+- [Salonized MCP](https://github.com/cotlet-connect/salonized-mcp)
